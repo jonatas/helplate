@@ -1,0 +1,8 @@
+Project: {{ name }}'s project
+
+[ Participants ]
+
+Theres some participants: {{ participants | join glue: ', '}}
+
+help:
+participants: who are envolved in this project? customers, clients etc (divided by comma)

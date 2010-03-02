@@ -1,0 +1,28 @@
+#!/opt/local/bin/ruby -w
+require 'rubygems'
+require 'liquid'
+
+if template = ARGV.shift
+  file, helptxt = File.read(template).split("help:\n")
+  template = Liquid::Template.parse(file)
+  
+  help = helptxt ? YAML.load(helptxt) : {}
+
+  args = {} 
+  while arg = ARGV.shift
+    k,v=arg.split("=")
+    args[k] = v.split(",").flatten
+  end
+
+  variables = template.root.nodelist.select{|e|e.kind_of?Liquid::Variable}.collect{|e|e.name}
+
+  missing =  variables.select{|e|args[e].nil?}
+  missing.each do |element|
+    puts(help[element]|| ">> insira: #{element}")
+    args[element] = gets
+  end
+
+  puts template.render(args)
+else
+  puts "Usage: helplate project name=business participants=jonatas,angela"
+end
